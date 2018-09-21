@@ -63,19 +63,20 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
-        $userID=md5($data['email']);
-        $time=time();
-        DB::table('Developers')->insert(
-            [
-                'developer_id'=>$userID,
-                'email'=>$data['email'],
-                'password'=>md5($data['password']),
-                'name'=>$data['name'],
-                'time'=>$time,
-                'createdAt'=>date('Y-m-d H:i:s'),
-                'updatedAt'=>date('Y-m-d H:i:s'),
-            ]
-        );
+        $url="http://47.93.221.82:12235/register";
+        $header=array("Content-Type"=>"application/x-www-form-urlencoded");
+        $body=array("email" => $data['email'],"password" => $data['password']);
+        $curl = curl_init($url);
+        curl_setopt_array($curl, array(
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_POST => true,
+            CURLOPT_POSTFIELDS => http_build_query($body),
+            CURLOPT_HTTPHEADER => $header,
+            CURLOPT_HEADER => false,
+            CURLOPT_NOBODY => false,
+        ));
+        curl_exec($curl);
+        curl_close($curl);
         return User::create([
             'name' => $data['name'],
             'email' => $data['email'],

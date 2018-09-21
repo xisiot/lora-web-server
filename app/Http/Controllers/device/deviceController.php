@@ -88,17 +88,20 @@ class deviceController extends Controller
                 }
             }
             //OTA设备注册信息写入
-            $time=date('Y-m-d H:i:s');
-            DB::table('DeviceInfo')->insert(
-                [
-                    'AppEUI' => $AppEUIGet,
-                    'DevEUI' => $DevEUIGet,
-                    'AppKey' => $AppKeyGet,
-                    'ProtocolVersion' => $ProtocolVersion,
-                    'createdAt'=>$time,
-                    'updatedAt'=>$time,
-                ]
-            );
+            $url="http://47.93.221.82:12235/device";
+            $header=array("Content-Type"=>"application/x-www-form-urlencoded");
+            $body=array("AppEUI" => $AppEUIGet, "DevEUI" => $DevEUIGet,"AppKey" => $AppKeyGet,);
+            $curl = curl_init($url);
+            curl_setopt_array($curl, array(
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_POST => true,
+                CURLOPT_POSTFIELDS => http_build_query($body),
+                CURLOPT_HTTPHEADER => $header,
+                CURLOPT_HEADER => false,
+                CURLOPT_NOBODY => false,
+            ));
+            curl_exec($curl);
+            curl_close($curl);
             return redirect('/device')->withErrors('设备成功注册');
         }
         else{

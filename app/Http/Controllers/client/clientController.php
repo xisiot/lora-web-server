@@ -55,16 +55,20 @@ class clientController extends Controller
             }
             else $i++;
         }  //判断用户修改的appEUI是否唯一
-        $time=date('Y-m-d H:i:s');
-        DB::table('AppInfo')->insert(
-            [
-                'AppEUI' => $AppEUIget,
-                'name' =>$nameget,
-                'userId'=>$userID,
-                'createdAt'=>$time,
-                'updatedAt'=>$time,
-            ]
-        );
+        $url="http://47.93.221.82:12235/application";
+        $header=array("Content-Type"=>"application/x-www-form-urlencoded");
+        $body=array("userID"=>$userID,"AppEUI"=>$AppEUIget,"name"=>$nameget);
+        $curl = curl_init($url);
+        curl_setopt_array($curl, array(
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_POST => true,
+            CURLOPT_POSTFIELDS => http_build_query($body),
+            CURLOPT_HTTPHEADER => $header,
+            CURLOPT_HEADER => false,
+            CURLOPT_NOBODY => false,
+        ));
+        curl_exec($curl);
+        curl_close($curl);
         $AppEUI=DB::table('AppInfo')->where('userId',$userID)->orderBy('createdAt','desc')->pluck('AppEUI');
         $name=DB::table('AppInfo')->where('userId',$userID)->orderBy('createdAt','desc')->pluck('name');
         $newAppEUI=$this->getrandom();//随机生成8位随机数
