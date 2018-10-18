@@ -87,7 +87,7 @@
                     @endif
                     @if($AppKeyFig==1)
                         <div class="field-wrapper form-group">
-                            <label class="col-sm-3 control-label">AES-128密钥（AppKey）</label>
+                            <label class="col-sm-3 control-label">******</label>
                             <div class="col-sm-5">
                                 <input type="text" required="" validate="" maxlength=32 class="form-control "id="AppKeyInput" name="AppKey"
                                        value="{{$AppKeyGet}}" placeholder="AES-128密钥且须为16字节长" onblur="keypress2()"
@@ -104,7 +104,7 @@
                     @endif
                     @if($AppKeyFig==0)
                         <div class="field-wrapper form-group">
-                            <label class="col-sm-3 control-label">AES-128密钥（AppKey）</label>
+                            <label class="col-sm-3 control-label">******</label>
                             <div class="col-sm-5">
                                 <input type="text" required="" validate="" maxlength=32 class="form-control " id="AppKey" name="AppKey"
                                        value="{{$AppKey}}" placeholder="AES-128密钥且须为16字节长" onblur="keypress4()"
@@ -126,7 +126,7 @@
                         <label class="col-sm-2" id="name5">还需输入{{$needDevAddr}}位十六进制数</label>
                     </div>
                     <div class="field-wrapper form-group">
-                        <label class="col-sm-3 control-label">网络会话密钥（NwkSKey）</label>
+                        <label class="col-sm-3 control-label">******</label>
                         <div class="col-sm-5">
                             <input type="text" required="" validate="" size="32" class="form-control " maxlength=32 value="{{$NwkSKey}}"
                                    name="NwkSKey" placeholder="网络会话密钥且须为16字节长" id="NwkSKey" onblur="keypress6()"
@@ -135,7 +135,7 @@
                         <label class="col-sm-2" id="name6">还需输入{{$needNwkSKey}}位十六进制数</label>
                     </div>
                     <div class="field-wrapper form-group">
-                        <label class="col-sm-3 control-label">应用会话密钥（AppSKey）</label>
+                        <label class="col-sm-3 control-label">******</label>
                         <div class="col-sm-5">
                             <input type="text" required="" validate="" size="32" class="form-control " maxlength=32 value="{{$AppSKey}}"
                                    name="AppSKey" placeholder="应用会话密钥且须为16字节长" id="AppSKey" onkeyup="keypress7()"

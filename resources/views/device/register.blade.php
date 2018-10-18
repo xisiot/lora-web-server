@@ -86,7 +86,7 @@
                             @endif
                         @if($AppKeyFig==1)
                                 <div class="field-wrapper form-group">
-                                    <label class="col-sm-3 control-label">AES-128密钥（AppKey）</label>
+                                    <label class="col-sm-3 control-label">******</label>
                                     <div class="col-sm-5">
                                         <input type="text" required="" validate="" maxlength=32 class="form-control " id="AppKeyInput" name="AppKey"
                                                 value="{{$AppKeyGet}}" placeholder="AES-128密钥且须为16字节长" onblur="keypress2()"
@@ -103,7 +103,7 @@
                             @endif
                         @if($AppKeyFig==0)
                                 <div class="field-wrapper form-group">
-                                    <label class="col-sm-3 control-label">AES-128密钥（AppKey）</label>
+                                    <label class="col-sm-3 control-label">******</label>
                                     <div class="col-sm-5">
                                         <input type="text" required="" validate="" maxlength=32 class="form-control " id="AppKey" name="AppKey"
                                                 value="{{$AppKey}}" placeholder="AES-128密钥且须为16字节长" onblur="keypress4()"
