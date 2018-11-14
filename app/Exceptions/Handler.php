@@ -64,17 +64,17 @@ class Handler extends ExceptionHandler
             return redirect()->guest('login');
         }
 
-        if ($exception instanceof HttpException) {
-            $code = $exception->getCode();
-            if (view()->exists('errors.' . $code)) {
-                $message  = $exception->getMessage();
-                return response()->view('errors.' . $exception->getCode(), ['message'=>$message], $exception->getCode());
-            }
-            else{
-                $message  = $exception->getMessage();
-                return view('errors.error')->with(['message'=>$message]);
-            }
-        }
+//        if ($exception instanceof HttpException) {
+//            $code = $exception->getCode();
+//            if (view()->exists('errors.' . $code)) {
+//                $message  = $exception->getMessage();
+//                return response()->view('errors.' . $exception->getCode(), ['message'=>$message], $exception->getCode());
+//            }
+//            else{
+//                $message  = $exception->getMessage();
+//                return view('errors.error')->with(['message'=>$message]);
+//            }
+//        }
 
         Log::info($exception->getMessage().' + '.$exception->getCode());
         return view('errors.error');
