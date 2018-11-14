@@ -77,8 +77,8 @@ class Handler extends ExceptionHandler
 //        }
 
         Log::info($exception->getMessage().' + '.$exception->getCode());
-        return view('errors.error');
-//        return parent::render($request, $exception);
+//        return view('errors.error');
+        return parent::render($request, $exception);
     }
     /**
      * Convert an authentication exception into an unauthenticated response.
