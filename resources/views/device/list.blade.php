@@ -9,14 +9,14 @@
                     <li><a href="{{ '/device' }}">设备管理</a></li>
                 </ol>
                 @if(count($now_product)==0)
-                    @else
-                <div class="spotlight-button" data-toggle="modal" data-target=".device-register-modal">
-                    <a class="btn btn-primary">设备注册</a>
-                </div>
-                <div class="spotlight-button" data-toggle="modal" data-target=".device-list-modal">
-                    <a class="btn btn-primary">选择应用</a>
-                </div>
-                    @endif
+                @else
+                    <div class="spotlight-button" data-toggle="modal" data-target=".device-register-modal">
+                        <a class="btn btn-primary">设备注册</a>
+                    </div>
+                    {{--<div class="spotlight-button" data-toggle="modal" data-target=".device-list-modal">--}}
+                    {{--<a class="btn btn-primary">选择应用</a>--}}
+                    {{--</div>--}}
+                @endif
             </div>
         </div>
     </div>
@@ -153,10 +153,10 @@
                 <form class="form form-horizontal" method="POST" action="{{ '/device/register' }}" enctype="multipart/form-data">
                     {{ csrf_field() }}
                     <div class="modal-body">
-                        @if(count($now_product)==0)
-                            @else
-                        <input type="hidden" id="AppEUI" name="AppEUI" value="{{($now_product)?($now_product[0]->AppEUI):null}}">
-                        @endif
+                        {{--@if(count($now_product)==0)--}}
+                            {{--@else--}}
+                        {{--<input type="hidden" id="AppEUI" name="AppEUI" value="{{($now_product)?($now_product[0]->AppEUI):null}}">--}}
+                        {{--@endif--}}
                         <div class="field-wrapper form-group">
                             <label class="col-sm-5 control-label">设备激活模式 <span class="indict">*</span></label>
                             <div class="col-sm-7">
@@ -172,6 +172,16 @@
                                 <select class="form-control" name="ProtocolVersion">
                                     <option value="1.0.2" selected="selected"> LoRaWAN 1.0.2</option>
                                     <option value="1.1"> LoRaWAN 1.1</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="field-wrapper form-group">
+                            <label class="col-sm-5 control-label">所属应用名称<span class="indict">*</span></label>
+                            <div class="col-sm-7">
+                                <select  validate="" class="form-control " name ="AppEUI">
+                                    @foreach($AppEUI as $xuhao=>$AppEUIS)
+                                        <option value="{{$AppEUIS}}" selected="selected">{{$AppEUIName[$xuhao]}}        AppEUI:{{$AppEUIS}}</option>
+                                    @endforeach
                                 </select>
                             </div>
                         </div>
@@ -242,6 +252,7 @@
                                 </div>
                             </div>
                         </div>
+
                     </div>
                     <div class="modal-footer">
                         <a class="btn btn-default" id="db_add_cancel" data-dismiss="modal">取消</a>

@@ -55,7 +55,7 @@ class clientController extends Controller
             }
             else $i++;
         }  //判断用户修改的appEUI是否唯一
-        $url="http://47.93.221.82:12235/application";
+        $url=env('HTTP_URL')."/application";
         $header=array("Content-Type"=>"application/x-www-form-urlencoded");
         $body=array("userID"=>$userID,"AppEUI"=>$AppEUIget,"name"=>$nameget);
         $curl = curl_init($url);

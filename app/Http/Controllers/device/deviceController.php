@@ -24,7 +24,8 @@ class deviceController extends Controller
     {
         $user = Auth::user();
         $userID=md5($user->email);
-        $products = DB::table('AppInfo')->where('userID',$userID)->orderBy('updatedAt','desc')->get();
+        $products = DB::table('AppInfo')->where('userID',$userID)->orderBy('updatedAt','desc')->get();//获取所有的应用
+        $AppEUI = DB::table('AppInfo')->where('userID',$userID)->pluck('AppEUI');
         if ($request->get('product_key')) { //用户选择应用后
             $product_key = $request->get('product_key');
             $now_product = DB::table('AppInfo')->where('AppEUI',$product_key)->get();
@@ -41,7 +42,7 @@ class deviceController extends Controller
         }
         session_start();
         session(['product_key'=>$product_key]);
-        $devices = DB::table('DeviceInfo')->where('AppEUI', $product_key)->orderBy('updatedAt', 'desc')->paginate(10);
+        $devices = DB::table('DeviceInfo')->where('userID',$userID)->orderBy('updatedAt', 'desc')->paginate(10);//获取所有的设备
         $DevEUI_ABP=$this->GetRandom(16);
         //判断生成的DevEUI是否是唯一的
         $DevEUIs = DB::table('DeviceInfo')->pluck('DevEUI');
@@ -65,7 +66,8 @@ class deviceController extends Controller
         $success='';
         return view('device/list')->with(['now_product' => $now_product, 'products' => $products,
                 'devices' => $devices, 'DevEUI_ABP'=>$DevEUI_ABP,'DevAddr_ABP'=>$DevAddr_ABP
-                ,'NwKSKey_ABP'=>$NwKSKey_ABP,'AppSKey_ABP'=>$AppSKey_ABP,'success' => $success]);
+                ,'NwKSKey_ABP'=>$NwKSKey_ABP,'AppSKey_ABP'=>$AppSKey_ABP,'success' => $success,
+            'AppEUI'=>$AppEUI]);
     }
     //设备注册后台处理
     public function register(Request $request){
@@ -76,32 +78,45 @@ class deviceController extends Controller
             $ProtocolVersion=$request->get('ProtocolVersion');
             //判断注册的DevEUI是否唯一
             $DevEUIs = DB::table('DeviceInfo')->pluck('DevEUI');
-//            $AppKeys=DB::table('DeviceInfo')->pluck('AppKey');
-//            for($i=0;$i<count($AppKeys);$i++) {
-//                if ($AppKeyGet == $AppKeys[$i]){
-//                     return redirect('/device')->withErrors('您输入的AES-128密钥已存在，请重新注册');
-//                }
-//            }
+            $AppKeys=DB::table('DeviceInfo')->pluck('AppKey');
+            for($i=0;$i<count($AppKeys);$i++) {
+                if ($AppKeyGet == $AppKeys[$i]){
+                     return redirect('/device')->withErrors('您输入的AES-128密钥已存在，请重新注册');
+                }
+            }
             for( $i=0;$i<count($DevEUIs);$i++){
                 if ( $DevEUIGet == $DevEUIs[$i] ) {
                     return redirect('/device')->withErrors('您输入的LoRa设备唯一标识符已存在，请重新注册');
                 }
             }
             //OTA设备注册信息写入
-            $url="http://47.93.221.82:12235/device";
-            $header=array("Content-Type"=>"application/x-www-form-urlencoded");
-            $body=array("AppEUI" => $AppEUIGet, "DevEUI" => $DevEUIGet,"AppKey" => $AppKeyGet,);
-            $curl = curl_init($url);
-            curl_setopt_array($curl, array(
-                CURLOPT_RETURNTRANSFER => true,
-                CURLOPT_POST => true,
-                CURLOPT_POSTFIELDS => http_build_query($body),
-                CURLOPT_HTTPHEADER => $header,
-                CURLOPT_HEADER => false,
-                CURLOPT_NOBODY => false,
-            ));
-            curl_exec($curl);
-            curl_close($curl);
+            $time=date('Y-m-d H:i:s');
+            DB::table('DeviceInfo')->insert(
+                [
+                    'AppEUI' => $AppEUIGet,
+                    'DevEUI' => $DevEUIGet,
+                    'AppKey'=>$AppKeyGet,
+                    'activationMode'=>'OTAA',
+                    'ProtocolVersion' => $ProtocolVersion,
+                    'createdAt'=>$time,
+                    'updatedAt'=>$time,
+                ]
+            );
+//            $url="http://47.93.221.82:12235/device";
+//            $header=array("Content-Type"=>"application/x-www-form-urlencoded");
+//            $body=array("AppEUI" => $AppEUIGet, "DevEUI" => $DevEUIGet,"AppKey" => $AppKeyGet,);
+//            $curl = curl_init($url);
+//            curl_setopt_array($curl, array(
+//                CURLOPT_RETURNTRANSFER => true,
+//                CURLOPT_POST => true,
+//                CURLOPT_POSTFIELDS => http_build_query($body),
+//                CURLOPT_HTTPHEADER => $header,
+//                CURLOPT_HEADER => false,
+//                CURLOPT_NOBODY => false,
+//            ));
+//            curl_exec($curl);
+//            curl_close($curl);
+
             return redirect('/device')->withErrors('设备成功注册');
         }
         else{
