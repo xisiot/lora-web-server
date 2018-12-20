@@ -25,7 +25,8 @@ class deviceController extends Controller
         $user = Auth::user();
         $userID=md5($user->email);
         $products = DB::table('AppInfo')->where('userID',$userID)->orderBy('updatedAt','desc')->get();//获取所有的应用
-        $AppEUI = DB::table('AppInfo')->where('userID',$userID)->pluck('AppEUI');
+        $AppEUI = DB::table('AppInfo')->where('userID',$userID)->orderBy('updatedAt','desc')->pluck('AppEUI');
+        $AppEUIName=DB::table('AppInfo')->where('userId',$userID)->orderBy('updatedAt','desc')->pluck('name');
         if ($request->get('product_key')) { //用户选择应用后
             $product_key = $request->get('product_key');
             $now_product = DB::table('AppInfo')->where('AppEUI',$product_key)->get();
@@ -42,7 +43,7 @@ class deviceController extends Controller
         }
         session_start();
         session(['product_key'=>$product_key]);
-        $devices = DB::table('DeviceInfo')->where('userID',$userID)->orderBy('updatedAt', 'desc')->paginate(10);//获取所有的设备
+        $devices = DB::table('DeviceInfo')->where('AppEUI', $product_key)->orderBy('updatedAt', 'desc')->paginate(10);//获取所有的设备
         $DevEUI_ABP=$this->GetRandom(16);
         //判断生成的DevEUI是否是唯一的
         $DevEUIs = DB::table('DeviceInfo')->pluck('DevEUI');
@@ -67,7 +68,7 @@ class deviceController extends Controller
         return view('device/list')->with(['now_product' => $now_product, 'products' => $products,
                 'devices' => $devices, 'DevEUI_ABP'=>$DevEUI_ABP,'DevAddr_ABP'=>$DevAddr_ABP
                 ,'NwKSKey_ABP'=>$NwKSKey_ABP,'AppSKey_ABP'=>$AppSKey_ABP,'success' => $success,
-            'AppEUI'=>$AppEUI]);
+                'AppEUI'=>$AppEUI,'AppEUIName'=>$AppEUIName]);
     }
     //设备注册后台处理
     public function register(Request $request){
@@ -116,7 +117,8 @@ class deviceController extends Controller
 //            ));
 //            curl_exec($curl);
 //            curl_close($curl);
-
+            session_start();
+            session(['product_key'=>$AppEUIGet]);
             return redirect('/device')->withErrors('设备成功注册');
         }
         else{
@@ -210,6 +212,8 @@ class deviceController extends Controller
                 'createdAt'=>$time,
                 'updatedAt'=>$time,
             ]);
+            session_start();
+            session(['product_key'=>$AppEUIGet]);
             return redirect('/device')->withErrors('设备成功注册');
         }
     }
