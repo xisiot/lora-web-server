@@ -198,6 +198,9 @@ composer install
   // the password
   DB_PASSWORD=
   
+  //registration interface provided by lora server,the default is http://localhost:3000
+  HTTP_URL=http://localhost:3000
+  
   // the configuration of the database(MongoDB) 
   MONGO_HOST=127.0.0.1
   MONGO_PORT=27017
