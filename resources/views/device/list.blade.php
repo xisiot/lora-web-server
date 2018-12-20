@@ -13,9 +13,9 @@
                     <div class="spotlight-button" data-toggle="modal" data-target=".device-register-modal">
                         <a class="btn btn-primary">设备注册</a>
                     </div>
-                    {{--<div class="spotlight-button" data-toggle="modal" data-target=".device-list-modal">--}}
-                    {{--<a class="btn btn-primary">选择应用</a>--}}
-                    {{--</div>--}}
+                    <div class="spotlight-button" data-toggle="modal" data-target=".device-list-modal">
+                    <a class="btn btn-primary">选择应用</a>
+                    </div>
                 @endif
             </div>
         </div>
