@@ -63,7 +63,7 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
-        $url="http://47.93.221.82:12235/register";
+        $url=env('HTTP_URL')."/register";
         $header=array("Content-Type"=>"application/x-www-form-urlencoded");
         $body=array("email" => $data['email'],"password" => $data['password']);
         $curl = curl_init($url);
