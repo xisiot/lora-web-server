@@ -235,8 +235,8 @@ class deviceController extends Controller
     public function data($input){
         $DevAddr=DB::table('DeviceInfo')->where('DevEUI',$input)->value('DevAddr');
         $device = DB::table('DeviceInfo')->where('DevEUI',$input)->first();
-        $datas = DB::connection('mongodb')->collection('lora_productKey_'.$device->productKey)->where('DevAddr',$DevAddr)
-            ->where('msgType', 'UPLINK_MSG')->orderBy('createdTime', 'desc')->paginate(10);
+        $datas = DB::connection('mongodb')->collection('lora_appeui_'.$device->AppEUI)->where('DevAddr',$DevAddr)
+            ->where('msgType', 'DOWNLINK_MSG')->orderBy('createdTime', 'desc')->paginate(10);
         return view('device/data')->with(['input'=>$input,'data'=>$datas]);
     }
     //设备应用数据页面
@@ -395,7 +395,7 @@ class deviceController extends Controller
         $success='';
         $DevAddr=DB::table('DeviceInfo')->where('DevEUI',$input)->value('DevAddr');
         $device = DB::table('DeviceInfo')->where('DevEUI',$input)->first();
-        $datas = DB::connection('mongodb')->collection('lora_productKey_'.$device->productKey)->where('DevAddr',$DevAddr)
+        $datas = DB::connection('mongodb')->collection('lora_appeui_'.$device->AppEUI)->where('DevAddr',$DevAddr)
             ->where('msgType', 'UPLINK_MSG')->orderBy('createdTime', 'desc')->paginate(10);
         return view('device/downlink')->with(['success'=>$success,'input'=>$input,'data'=>$datas]);
     }

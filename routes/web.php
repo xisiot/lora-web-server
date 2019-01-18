@@ -62,10 +62,10 @@ Route::group(['middleware' => 'auth', 'namespace' => 'device', 'prefix' => 'devi
     Route::match(['get', 'post'], '/', 'deviceController@index');//设备管理首页
     Route::post('/register', 'deviceController@register');//注册后台处理
     Route::get('/{input}', 'deviceController@input');//转至该设备下具体数据展示
-    Route::get('/{input}/data', 'deviceController@data');//设备的传输数据展示
-    Route::get('/{input}/data/uplink', 'deviceController@upLink'); //设备上行数据的发送页面
-    Route::get('/{input}/data/downlink', 'deviceController@downLink'); //设备下行数据的发送页面
-    Route::post('/{input}/data/downlink', 'deviceController@downLinkPost');//设备下行数据存储数据库
+    Route::get('/{input}/data', 'deviceController@data');//设备的上行数据页面
+//    Route::get('/{input}/data/uplink', 'deviceController@upLink'); //设备应用数据页面，暂未使用
+    Route::get('/{input}/data/downlink', 'deviceController@downLink'); //设备下行数据页面
+//    Route::post('/{input}/data/downlink', 'deviceController@downLinkPost');//设备下行数据存储数据库
     Route::get('/{input}/setting', 'deviceController@setting');//设备更改设置页面
     Route::post('/{input}/setting', 'deviceController@settingPost');//设置修改的存储
     Route::get('/{input}/setting/appeui', 'deviceController@settingAppEUI');
