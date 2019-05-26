@@ -236,7 +236,7 @@ class deviceController extends Controller
         $DevAddr=DB::table('DeviceInfo')->where('DevEUI',$input)->value('DevAddr');
         $device = DB::table('DeviceInfo')->where('DevEUI',$input)->first();
         $datas = DB::connection('mongodb')->collection('lora_appeui_'.$device->AppEUI)->where('DevAddr',$DevAddr)
-            ->where('msgType', 'DOWNLINK_MSG')->orderBy('createdTime', 'desc')->paginate(10);
+            ->where('msgType', 'UPLINK_MSG')->orderBy('createdTime', 'desc')->paginate(10);
         return view('device/data')->with(['input'=>$input,'data'=>$datas]);
     }
     //设备应用数据页面
@@ -245,11 +245,11 @@ class deviceController extends Controller
         $device = DB::table('DeviceInfo')->where('DevEUI',$input)->first();
         $now_timestamp=time();
         $old_timestamp=$now_timestamp-60*20;
-        $data = DB::connection('mongodb')->collection('productKey:'.$device->productKey)->where('did',$device->did)
-            ->where('operation', 'update')->whereBetween('timestamp',[$old_timestamp,$now_timestamp])->orderBy('timestamp', 'desc')->get();
+        $data = DB::connection('mongodb')->collection('appeui:'.$device->AppEUI)->where('DevAddr',$device->DevAddr)
+            ->where('operation', 'Update')->whereBetween('timestamp',[$old_timestamp,$now_timestamp])->orderBy('timestamp', 'desc')->get();
         if(count($data)==0){
-            $data = DB::connection('mongodb')->collection('productKey:'.$device->productKey)->where('did',$device->did)
-                ->where('operation', 'update')->orderBy('timestamp', 'desc')->first();
+            $data = DB::connection('mongodb')->collection('appeui:'.$device->AppEUI)->where('DevAddr',$device->DevAddr)
+                ->where('operation', 'Update')->orderBy('timestamp', 'desc')->first();
             if(isset($data['payload']['state']['reported'])){
                 $data_reported=$data['payload']['state']['reported'];
                 while(isset($data_reported)) {
@@ -267,8 +267,8 @@ class deviceController extends Controller
                         }
                     }
                     $deviceType = 1;// 空气、水位等payload有值的设备
-                    $details = DB::connection('mongodb')->collection('productKey:' . $device->productKey)->where('did', $device->did)
-                        ->where('operation', 'update')->orderBy('timestamp', 'desc')->paginate(10);
+                    $details = DB::connection('mongodb')->collection('appeui:'.$device->AppEUI)->where('DevAddr',$device->DevAddr)
+                        ->where('operation', 'Update')->orderBy('timestamp', 'desc')->paginate(10);
                     return view('device/uplink')->with(['input'=>$input,'device' => $device, 'deviceType' => $deviceType,
                         'details' => $details, 'data' => $data, 'table_key' => $table_key]);
                 }
@@ -276,8 +276,8 @@ class deviceController extends Controller
             elseif(isset($data['timestamp'])){
                 $now_timestamp=$data['timestamp'];
                 $old_timestamp=$now_timestamp-60*20;
-                $data = DB::connection('mongodb')->collection('productKey:'.$device->productKey)->where('did',$device->did)
-                    ->where('operation', 'update')->whereBetween('timestamp',[$old_timestamp,$now_timestamp])->orderBy('timestamp', 'desc')->get();
+                $data = DB::connection('mongodb')->collection('appeui:'.$device->AppEUI)->where('DevAddr',$device->DevAddr)
+                    ->where('operation', 'Update')->whereBetween('timestamp',[$old_timestamp,$now_timestamp])->orderBy('timestamp', 'desc')->get();
                 for($i=0;$i<count($data);$i++){
                     if(isset($data[$i]['payload']['state']['reported'])){
                         $data_reported=$data[$i]['payload']['state']['reported'];
@@ -357,15 +357,15 @@ class deviceController extends Controller
                         }
                     }
                     $deviceType = 1;// 空气、水位等payload有值的设备
-                    $details = DB::connection('mongodb')->collection('productKey:' . $device->productKey)->where('did', $device->did)
-                        ->where('operation', 'update')->orderBy('timestamp', 'desc')->paginate(10);
+                    $details = DB::connection('mongodb')->collection('appeui:'.$device->AppEUI)->where('DevAddr',$device->DevAddr)
+                        ->where('operation', 'Update')->orderBy('timestamp', 'desc')->paginate(10);
                     return view('device/uplink')->with(['input'=>$input,'device' => $device, 'deviceType' => $deviceType,
                         'details' => $details, 'data' => $data, 'table_key' => $table_key]);
                 }
             }
             if($i==count($data)&&!isset($data[$i]['payload']['state']['reported'])){
-                $data = DB::connection('mongodb')->collection('productKey:'.$device->productKey)->where('did',$device->did)
-                    ->where('operation', 'update')->orderBy('timestamp', 'asc')->get(1);
+                $data = DB::connection('mongodb')->collection('appeui:'.$device->AppEUI)->where('DevAddr',$device->DevAddr)
+                    ->where('operation', 'Update')->orderBy('timestamp', 'asc')->get(1);
                 $data_reported=$data[$i]['payload']['state']['reported'];
                 while(isset($data_reported)) {
                     $table_key = array();
@@ -382,8 +382,8 @@ class deviceController extends Controller
                         }
                     }
                     $deviceType = 1;// 空气、水位等payload有值的设备
-                    $details = DB::connection('mongodb')->collection('productKey:' . $device->productKey)->where('did', $device->did)
-                        ->where('operation', 'update')->orderBy('timestamp', 'desc')->paginate(10);
+                    $details = DB::connection('mongodb')->collection('appeui:'.$device->AppEUI)->where('DevAddr',$device->DevAddr)
+                        ->where('operation', 'Update')->orderBy('timestamp', 'desc')->paginate(10);
                     return view('device/uplink')->with(['input'=>$input,'device' => $device, 'deviceType' => $deviceType,
                         'details' => $details, 'data' => $data, 'table_key' => $table_key]);
                 }
@@ -396,7 +396,7 @@ class deviceController extends Controller
         $DevAddr=DB::table('DeviceInfo')->where('DevEUI',$input)->value('DevAddr');
         $device = DB::table('DeviceInfo')->where('DevEUI',$input)->first();
         $datas = DB::connection('mongodb')->collection('lora_appeui_'.$device->AppEUI)->where('DevAddr',$DevAddr)
-            ->where('msgType', 'UPLINK_MSG')->orderBy('createdTime', 'desc')->paginate(10);
+            ->where('msgType', 'DOWNLINK_MSG')->orderBy('createdTime', 'desc')->paginate(10);
         return view('device/downlink')->with(['success'=>$success,'input'=>$input,'data'=>$datas]);
     }
     //发送下行数据TODO

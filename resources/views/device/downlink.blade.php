@@ -57,7 +57,7 @@
                 <div class="col-md-12 column">
                         <ul class="pagination">
                             <li><a href="/device/{{$input}}/data" >上行数据</a></li>
-                            {{--<li><a href="/device/{{$input}}/data/uplink">应用数据</a></li>--}}
+                            <li><a href="/device/{{$input}}/data/uplink">应用数据</a></li>
                             <li class="active"><a href="/device/{{$input}}/data/downlink"  >下行数据</a></li>
                         </ul>
                     @if (count($errors) > 0)

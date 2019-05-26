@@ -87,16 +87,16 @@
                                 @foreach($time as $times)
                                     <tbody>
                                     <tr>
-                                        <td>{{$times->time}}</td>
+                                        <td>{{date('Y-m-d H:i:s',$times['createdTime'])}}</td>
                                         {{--<td>{{$times->lati}}</td>--}}
                                         {{--<td>{{$times->long}}</td>--}}
                                         {{--<td>{{$times->alti}}</td>--}}
-                                        <td>{{$times->rxnb}}</td>
-                                        <td>{{$times->rxok}}</td>
-                                        <td>{{$times->rxfw}}</td>
-                                        <td>{{$times->ackr}}%</td>
-                                        <td>{{$times->dwnb}}</td>
-                                        <td>{{$times->txnb}}</td>
+                                        <td>{{$times['data']['stat']['rxnb']}}</td>
+                                        <td>{{$times['data']['stat']['rxok']}}</td>
+                                        <td>{{$times['data']['stat']['rxfw']}}</td>
+                                        <td>{{$times['data']['stat']['ackr']}}%</td>
+                                        <td>{{$times['data']['stat']['dwnb']}}</td>
+                                        <td>{{$times['data']['stat']['txnb']}}</td>
                                     </tr>
                                     </tbody>
                                 @endforeach

@@ -58,7 +58,7 @@
                     <div class="col-md-12 column">
                         <ul class="pagination">
                             <li><a href="/device/{{$input}}/data">上行数据</a></li>
-                            {{--<li class="active"><a href="/device/{{$input}}/data/uplink">应用数据</a></li>--}}
+                            <li class="active"><a href="/device/{{$input}}/data/uplink">应用数据</a></li>
                             <li><a href="/device/{{$input}}/data/downlink">下行数据</a></li>
                         </ul>
                         <div class="row clearfix">
@@ -81,7 +81,23 @@
                                                 <td>时间</td>
                                                 <td>数据类型</td>
                                                 @foreach($table_key as $table_keys)
-                                                    <td>{{$table_keys}}</td>
+                                                    @if($table_keys == 'temp')
+                                                        <td>温度(℃)</td>
+                                                    @elseif($table_keys == 'humi')
+                                                        <td>相对湿度</td>
+                                                    @elseif($table_keys == 'battery')
+                                                        <td>电池电量</td>
+                                                    @elseif($table_keys == 'windDirection')
+                                                        <td>风向</td>
+                                                    @elseif($table_keys =='windSpeed')
+                                                        <td>风速(m/s)</td>
+                                                    @elseif($table_keys =='pm25')
+                                                        <td>PM2.5(μg/m³)</td>
+                                                    @elseif($table_keys =='pm10')
+                                                        <td>PM10(μg/m³)</td>
+                                                        @else
+                                                        <td>{{$table_keys}}</td>
+                                                    @endif
                                                 @endforeach
                                             </tr>
                                         @endif
@@ -95,7 +111,31 @@
                                                     @foreach($detail['payload']['state']['reported'] as $key=>$value)
                                                         @if(is_array($value))
                                                             @foreach($value as $keySec=>$valueSec)
+                                                                @if($key == 'windDirection')
+                                                                    @if($valueSec == 1)
+                                                                    <td>正北风</td>
+                                                                    @elseif($valueSec == 2)
+                                                                        <td>东北风</td>
+                                                                    @elseif($valueSec == 3)
+                                                                        <td>正东风</td>
+                                                                    @elseif($valueSec == 4)
+                                                                        <td>东南风</td>
+                                                                    @elseif($valueSec == 5)
+                                                                        <td>正南风</td>
+                                                                    @elseif($valueSec == 6)
+                                                                        <td>西南风</td>
+                                                                    @elseif($valueSec == 7)
+                                                                        <td>正西风</td>
+                                                                    @elseif($valueSec == 8)
+                                                                        <td>西北风</td>
+                                                                        @else
+                                                                        <td>错误数据</td>
+                                                                    @endif
+                                                                @elseif($key == 'windSpeed')
+                                                                    <td>{{$valueSec/10}}</td>
+                                                                @else
                                                                 <td>{{$valueSec}}</td>
+                                                                @endif
                                                             @endforeach
                                                         @else
                                                             <td>{{$value}}</td>

@@ -4,7 +4,6 @@ namespace App\Http\Controllers\gateway;
 use Validator;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-date_default_timezone_set('prc');
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Charts;
@@ -12,6 +11,7 @@ Use App\Rules\GatewaysRule;
 use App\Rules\latitudeDataRule;
 use App\Rules\longitudeDataRule;
 use Khill\Lavacharts\Lavacharts;
+date_default_timezone_set('prc');
 
 class gatewayController extends Controller
 {
@@ -114,7 +114,11 @@ class gatewayController extends Controller
     //网关传输数据后台，返回table列表展示页面
     public function trafficList($input){
         //gateway 收到的信息
-        $times=DB::table('GatewayStatus')->where('gatewayId', $input)->orderBy('time','desc')->paginate(10);
+        $email = Auth::user()->email;
+        $developer_id = DB::table('Developers')->where('email', $email)->value('developer_id');
+        $times = DB::connection('mongodb')->collection('lora_user_'.$developer_id)->where('gatewayId',$input)
+            ->where('msgType', 'GATEWAYSTAT')->orderBy('createdTime', 'desc')->paginate(10);
+//        $times=DB::table('GatewayStatus')->where('gatewayId', $input)->orderBy('time','desc')->paginate(10);
         return view('gateway/traffic')->with(['input'=>$input,'time'=>$times]);
     }
     //网关传输数据后台，返回graph图表展示页面
@@ -123,7 +127,11 @@ class gatewayController extends Controller
         $month=($request->get('MM'))?$request->get('MM'):date('m');
         $data=($request->get('DD'))?$request->get('DD'):date('d');
         $compareTime=$year.'-'.$month.'-'.$data;
-        $gateway=DB::table('GatewayStatus')->where('gatewayId', $input)->whereDate('createdAt', $compareTime)->orderBy('time','asc')->get();
+        $email = Auth::user()->email;
+        $developer_id = DB::table('Developers')->where('email', $email)->value('developer_id');
+        $gateway = DB::connection('mongodb')->collection('lora_user_'.$developer_id)->where('gatewayId',$input)
+            ->where('msgType', 'GATEWAYSTAT')->whereDate('createdTime', $compareTime)->orderBy('createdTime', 'desc')->get();
+//        $gateway=DB::table('GatewayStatus')->where('gatewayId', $input)->whereDate('createdAt', $compareTime)->orderBy('time','asc')->get();
         $time=array();
         $rxnb=array();
         $rxfw=array();
@@ -131,12 +139,12 @@ class gatewayController extends Controller
         $dwnb=array();
         $rxok=array();
         for($i=0;$i<count($gateway);$i++) {
-            $time[$i] = $gateway[$i]->time;
-            $rxok[$i] = $gateway[$i]->rxok;
-            $rxnb[$i] = $gateway[$i]->rxnb;
-            $rxfw[$i] = $gateway[$i]->rxfw;
-            $txnb[$i] = $gateway[$i]->txnb;
-            $dwnb[$i] = $gateway[$i]->dwnb;
+            $time[$i] = $gateway[$i]['createdTime'];
+            $rxok[$i] = $gateway[$i]['data']['stat']['rxok'];
+            $rxnb[$i] = $gateway[$i]['data']['stat']['rxnb'];
+            $rxfw[$i] = $gateway[$i]['data']['stat']['rxfw'];
+            $txnb[$i] = $gateway[$i]['data']['stat']['txnb'];
+            $dwnb[$i] = $gateway[$i]['data']['stat']['dwnb'];
         }
         $lava = new Lavacharts;
         $chart = $lava->DataTable();
