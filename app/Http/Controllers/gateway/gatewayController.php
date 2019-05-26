@@ -126,11 +126,13 @@ class gatewayController extends Controller
         $year=($request->get('YYYY'))?$request->get('YYYY'):date('Y');
         $month=($request->get('MM'))?$request->get('MM'):date('m');
         $data=($request->get('DD'))?$request->get('DD'):date('d');
-        $compareTime=$year.'-'.$month.'-'.$data;
+        $compareTime=$year.'-'.$month.'-'.$data.' 00:00:00';
+        $nowTime = strtotime($compareTime);
+        $oldTime = $nowTime - 24*60*60;
         $email = Auth::user()->email;
         $developer_id = DB::table('Developers')->where('email', $email)->value('developer_id');
         $gateway = DB::connection('mongodb')->collection('lora_user_'.$developer_id)->where('gatewayId',$input)
-            ->where('msgType', 'GATEWAYSTAT')->whereDate('createdTime', $compareTime)->orderBy('createdTime', 'desc')->get();
+            ->where('msgType', 'GATEWAYSTAT')->whereBetween('createdTime', [$oldTime, $nowTime])->orderBy('createdTime', 'desc')->get();
 //        $gateway=DB::table('GatewayStatus')->where('gatewayId', $input)->whereDate('createdAt', $compareTime)->orderBy('time','asc')->get();
         $time=array();
         $rxnb=array();
