@@ -333,8 +333,8 @@ class deviceController extends Controller
             else{
                 $table_key=array();
                 $deviceType = 1;// 空气、水位等payload有值的设备
-                $details = DB::connection('mongodb')->collection('productKey:' . $device->productKey)->where('did', $device->did)
-                    ->where('operation', 'update')->orderBy('timestamp', 'desc')->paginate(10);
+                $details = DB::connection('mongodb')->collection('appeui:'.$device->AppEUI)->where('DevAddr',$device->DevAddr)
+                    ->where('operation', 'Update')->orderBy('timestamp', 'desc')->paginate(10);
                 return view('device/uplink')->with(['input'=>$input,'device' => $device, 'deviceType' => $deviceType,
                     'details' => $details, 'data' => $data, 'table_key' => $table_key]);
             }
