@@ -244,7 +244,7 @@ class deviceController extends Controller
         \Log::info(Auth::user()->email . "------->Show device details--------->");
         $device = DB::table('DeviceInfo')->where('DevEUI',$input)->first();
         $now_timestamp=time();
-        $old_timestamp=$now_timestamp-60*20;
+        $old_timestamp=$now_timestamp-60*60;
         $data = DB::connection('mongodb')->collection('appeui:'.$device->AppEUI)->where('DevAddr',$device->DevAddr)
             ->where('operation', 'Update')->whereBetween('timestamp',[$old_timestamp,$now_timestamp])->orderBy('timestamp', 'desc')->get();
         if(count($data)==0){
