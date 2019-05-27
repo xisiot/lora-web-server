@@ -143,7 +143,7 @@ class gatewayController extends Controller
         $dwnb=array();
         $rxok=array();
         for($i=0;$i<count($gateway);$i++) {
-            $time[$i] = $gateway[$i]['createdTime'];
+            $time[$i] = date('Y-m-d H:i:s',$gateway[$i]['createdTime']);
             $rxok[$i] = $gateway[$i]['data']['stat']['rxok'];
             $rxnb[$i] = $gateway[$i]['data']['stat']['rxnb'];
             $rxfw[$i] = $gateway[$i]['data']['stat']['rxfw'];
