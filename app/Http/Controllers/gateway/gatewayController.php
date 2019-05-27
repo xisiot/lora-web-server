@@ -116,7 +116,8 @@ class gatewayController extends Controller
         //gateway 收到的信息
         $email = Auth::user()->email;
         $developer_id = DB::table('Developers')->where('email', $email)->value('developer_id');
-        $times = DB::connection('mongodb')->collection('lora_user_'.$developer_id)->where('gatewayId',$input)
+        $gatewayId = strtolower($input);
+        $times = DB::connection('mongodb')->collection('lora_user_'.$developer_id)->where('gatewayId',$gatewayId)
             ->where('msgType', 'GATEWAYSTAT')->orderBy('createdTime', 'desc')->paginate(10);
 //        $times=DB::table('GatewayStatus')->where('gatewayId', $input)->orderBy('time','desc')->paginate(10);
         return view('gateway/traffic')->with(['input'=>$input,'time'=>$times]);
@@ -131,7 +132,8 @@ class gatewayController extends Controller
         $oldTime = $nowTime - 24*60*60;
         $email = Auth::user()->email;
         $developer_id = DB::table('Developers')->where('email', $email)->value('developer_id');
-        $gateway = DB::connection('mongodb')->collection('lora_user_'.$developer_id)->where('gatewayId',$input)
+        $gatewayId = strtolower($input);
+        $gateway = DB::connection('mongodb')->collection('lora_user_'.$developer_id)->where('gatewayId',$gatewayId)
             ->where('msgType', 'GATEWAYSTAT')->whereBetween('createdTime', [$oldTime, $nowTime])->orderBy('createdTime', 'desc')->get();
 //        $gateway=DB::table('GatewayStatus')->where('gatewayId', $input)->whereDate('createdAt', $compareTime)->orderBy('time','asc')->get();
         $time=array();
