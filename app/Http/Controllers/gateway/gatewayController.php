@@ -127,7 +127,7 @@ class gatewayController extends Controller
         $year=($request->get('YYYY'))?$request->get('YYYY'):date('Y');
         $month=($request->get('MM'))?$request->get('MM'):date('m');
         $data=($request->get('DD'))?$request->get('DD'):date('d');
-        $compareTime=$year.'-'.$month.'-'.$data.' 00:00:00';
+        $compareTime=$year.'-'.$month.'-'.$data.' 23:59:59';
         $nowTime = strtotime($compareTime);
         $oldTime = $nowTime - 24*60*60;
         $email = Auth::user()->email;
