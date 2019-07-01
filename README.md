@@ -33,19 +33,19 @@ This web page is used to register applications, gateways, and devices. After suc
 - Install PHP7.0.30：
 
   ```shell
-  sudo apt-get install php7.0.30
+  sudo apt-get install php
   ```
 
 - Install apache2 php7 module：
 
   ```shell
-  sudo apt-get install libapache2-mod-php7.0.30
+  sudo apt-get install libapache2-mod-php
   ```
 
 - Install MySQL php module：
 
   ```shell
-  apt-get install php5-mysql
+  apt-get install php-mysql
   ```
 
 - Create a new file `test.php` in the project root directory. Then input: `echo phpinfo (); `, check whether the environment is configured successfully.
@@ -120,15 +120,23 @@ This web page is used to register applications, gateways, and devices. After suc
     sudo apt-get install libcurl4-openssl-dev
     ```
 
-  - Then, add `extension=mongodb.so` to `php.ini` file ;
+  - Then, add `extension=mongodb.so` to `php.ini` file :
+
+    ```shell
+    sudo apt-get install php-mongodb
+    ```
 
   - Restart Apache2: 
 
     ```shell
-    service restart apache2
+    service apache2 restart
     ```
 
 ##### 1.5 Composer(recommend: 1.5.2)
+
+　Composer supports two methods for installation.
+
+###### 1.5.1 Install as a local variable
 
 - Download:
 
@@ -140,6 +148,28 @@ This web page is used to register applications, gateways, and devices. After suc
 
   ```shell
   /usr/bin/php composer.phar –1.5.2
+  ```
+
+- Set global command:
+
+  ```shell
+  sudo mv composer.phar /usr/local/bin/composer
+  ```
+
+###### 1.5.2 Install as a global variable
+
+- Download & Install:
+
+  ```shell
+  php -r "copy('https://install.phpcomposer.com/installer', 'composer-setup.php');" 
+  ```
+
+  ```
+  php composer-setup.php 
+  ```
+
+  ```shell
+   php -r "unlink('composer-setup.php');"
   ```
 
 - Set global command:
